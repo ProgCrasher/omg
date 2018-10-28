@@ -1,4 +1,5 @@
 var LivingCreature = require("./class.Parent");
+var VirusPred = require('./class.illPred');
 
 module.exports = class Mutant extends LivingCreature {
 	constructor(x, y, index) {
@@ -26,14 +27,13 @@ module.exports = class Mutant extends LivingCreature {
 		];
 	}
 
-	chooseCell(character, cd, cd2, cd3, cd4) {
+	chooseCell(matrix,character, cd, cd2, cd3, cd4) {
 		this.largeCoo();
-		return super.chooseCell(character, cd, cd2, cd3, cd4);
+		return super.chooseCell(matrix,character, cd, cd2, cd3, cd4);
 	}
 
-	move() {
-		var matrix = require('./matrix');
-		var newCell = this.chooseCell(0, 1, 2, 3, 5);
+	move(matrix,mutant) {
+		var newCell = this.chooseCell(matrix,0, 1, 2, 3, 5);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -50,18 +50,13 @@ module.exports = class Mutant extends LivingCreature {
 		}
 
 		if (this.energy < 3) {
-			this.die();
+			this.die(matrix,mutant);
 		}
 	}
 
-	eat() {
-		var matrix = require('./matrix');
-		var grassEater = require('./array/grassEaterArr');
-		var grassArr = require('./array/grassArr');
-		var predator = require('./array/predatorArr');
-		var knight = require('./array/knightArr');
+	eat(matrix,grassArr,grassEater,predator,mutant,knight,viruspred) {
 
-		var newCell = this.chooseCell(1, 2, 3, 5);
+		var newCell = this.chooseCell(matrix,1, 2, 3, 5);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 
@@ -83,7 +78,7 @@ module.exports = class Mutant extends LivingCreature {
 			for (var i in predator) {
 				if (x == predator[i].x && y == predator[i].y) {
 					predator.splice(i, 1);
-					this.poison();
+					this.poison(matrix,viruspred);
 
 				}
 			}
@@ -110,25 +105,22 @@ module.exports = class Mutant extends LivingCreature {
 
 
 			if (this.multiply == 34) {
-				this.mul();
+				this.mul(matrix,mutant);
 				this.multiply = 0;
 			}
 
 		}
 
 		else {
-			this.move();
+			this.move(matrix,mutant);
 		}
 	}
 
-	poison() {
-		var matrix = require('./matrix');
-		var viruspred = require('./array/vpredArr');
-		var VirusPred = require('./class.illPred');
+	poison(matrix,viruspred) {
 
 		for (var i = 0; i <= 50; i++) {
 
-			var newCell = this.chooseCell(3);
+			var newCell = this.chooseCell(matrix,3);
 			var card = newCell[Math.floor(Math.random() * newCell.length)];
 			if (card) {
 				var x = card[0];
@@ -146,10 +138,8 @@ module.exports = class Mutant extends LivingCreature {
 		}
 	}
 
-	mul() {
-		var matrix = require('./matrix');
-		var mutant = require('./array/mutantArr');
-		var newCell = this.chooseCell(0);
+	mul(matrix,mutant) {
+		var newCell = this.chooseCell(matrix,0);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -168,9 +158,7 @@ module.exports = class Mutant extends LivingCreature {
 
 	}
 
-	die() {
-		var matrix = require('./matrix');
-		var mutant = require('./array/mutantArr');
+	die(matrix,mutant) {
 
 		this.largeCoo();
 		matrix[this.y][this.x] = 0;

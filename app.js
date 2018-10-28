@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var fs = require('fs');
 
 var matrix = require('./modules/matrix');
 
@@ -10,14 +11,8 @@ var grassArr = require('./modules/array/grassArr');
 var grassEater = require('./modules/array/grassEaterArr');
 var predator = require('./modules/array/predatorArr');
 var mutant = require('./modules/array/mutantArr');
-
-
-//methods
-var grassMeth = require('./modules/methods/grassMul');
-var grassEaterMeth = require('./modules/methods/gEater');
-var predatorMeth = require('./modules/methods/predator');
-var mutantMeth = require('./modules/methods/mutant');
-
+var viruspred = require('./modules/array/vpredArr');
+var knight = require('./modules/array/knightArr');
 
 app.use(express.static('public'));
 
@@ -27,38 +22,43 @@ app.get('/', function (req, res) {
 
 server.listen(3000);
 
+var frameCount = 0;
+
 io.on('connection', function (socket) {
-  
+
   socket.emit('recieve matrix', matrix);
 
-  var interval = setInterval( function(){socket.emit("redraw", matrix)}, 200);
+  var interval = setInterval(function () {
+    frameCount++;
+    for (var i in grassArr) { grassArr[i].mul(matrix, grassArr); };
+    for (var i in grassEater) {
+      grassEater[i].eat(matrix, grassArr, grassEater);
+    };
+    for (var i in predator) { predator[i].eat(matrix, grassEater, predator); };
+    for (var i in mutant) { mutant[i].eat(matrix, grassArr, grassEater, predator, mutant, knight, viruspred); };
+    for (var i in viruspred) { viruspred[i].eat(matrix, predator, viruspred); };
+    for (var i in knight) { knight[i].eat(matrix, predator, mutant, knight, viruspred); };
 
-  socket.on('stop-draw', function(){clearInterval(interval);})
-  
-  //array recieve
-  socket.emit('grassArr transform',grassArr);
-  socket.emit('grassEaterArr transform',grassEater);
-  socket.emit('predators transform',predator);
-  socket.emit('muttrans',mutant);
+    if (frameCount % 25 == 0) {
+      socket.emit("stats", main());
+    }
 
+    socket.emit("redraw", matrix)
+  }, 200);
 
-  //method recieve
-  socket.emit('grassmethod',grassMeth);
-  socket.emit('Eater method',grassEaterMeth);
-  socket.emit('preds method',predatorMeth);
-  socket.emit('muts method',mutantMeth);
+  socket.on('stop-draw', function () { clearInterval(interval); })
 
 });
 
+function main() {
 
+  var stat = {
+    "Grass": grassArr.length,
+    "GrassEater": grassEater.length
+  };
 
+  var jsonText = JSON.stringify(stat);
+  fs.writeFileSync("obj.json", jsonText);
 
-//Artaki metod@
-/*
-const express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-app.set('port', process.env.PORT || 3000);
-*/
+  return stat;
+}

@@ -1,11 +1,11 @@
 /////////////////////////////////////////
-var knight = [];
-var viruspred=[];
 
 var socket;
 var matrix;
 
 var side = 7;
+
+var stats;
 
 ////////////////////////////////////////
 function setup() {
@@ -13,68 +13,27 @@ function setup() {
 
 	socket = io.connect('http://localhost:3000');
 
-	window.addEventListener('click', function(){
+	window.addEventListener('click', function () {
 		socket.emit('stop-draw');
 	});
-	
-	socket.on('recieve matrix', function (mtx){
+
+	socket.on('recieve matrix', function (mtx) {
 		matrix = mtx;
-		
-		console.log(matrix);
 		createCanvas(matrix[0].length * side, matrix.length * side);
 		background('#acacac');
 		socket.on('redraw', redrawMatrix);
 		noLoop();
+		
+		socket.on("stats", function (st) {
+			stats = st;
+		});
 	});
 
-	function redrawMatrix(mtx)
-	{
+	function redrawMatrix(mtx) {
 		matrix = mtx;
 		redraw();
-		console.log("I work");
 	}
-	//-------------------------------------------------
-	socket.on('grassArr transform',function(grassArr){
-		console.log(grassArr);
-		socket.on('grassmethod',function(){});
-		
-	});
-	//--------------------------------------------------
-	socket.on('grassEaterArr transform',function(grassEater){
-		console.log(grassEater);
-		socket.on('Eater method',function(){});
-		
-	});
-	//--------------------------------------------------	
-	socket.on('predators transform',function(predator){
-		console.log(predator);
-		socket.on('preds method',function(){});
-		
-	});
-	//--------------------------------------------------	
-	socket.on('muttrans',function(mutant){
-		console.log(mutant);
-		socket.on('muts method',function(){});
-		
-	});
-	//--------------------------------------------------	
-	
-	/*
-	for (var y = 0; y < matrix.length; y++) {
-		for (var x = 0; x < matrix[y].length; x++) {
-			//aspet
-			else if (matrix[y][x] == 5) {
-				knight.push(new Knight(x, y, 5));
-			}
-			//darac gishatich
-			else if (matrix[y][x] == 6) {
-				viruspred.push(new VirusPred(x, y, 6));
-			}
-		}
-	}*/
-
 }
-
 
 function draw() {
 	for (var y = 0; y < matrix.length; y++) {
@@ -110,17 +69,9 @@ function draw() {
 			}
 		}
 	}
+
+	for(var i in stats)	console.log(i + ": " + stats[i]);
 	/*
-	//aspeti metodi kanch
-	for (var i in knight) {
-		knight[i].eat();
-		
-	}
-	
-	for (var i in viruspred) {
-		viruspred[i].eat();
-		
-	}
 ////////////////////////////////////////
 
 	if (mutant.length==0 && viruspred.length==0) {

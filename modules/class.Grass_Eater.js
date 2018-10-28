@@ -19,13 +19,12 @@ module.exports =  class GrassEater extends LivingCreature {
 	}
 
 
-	chooseCell(character, cd) {
+	chooseCell(matrix, character, cd) {
 		this.getNewCoordinates();
-		return super.chooseCell(character, cd);
+		return super.chooseCell(matrix, character, cd);
 	}
-	move() {
-		var matrix = require('./matrix');
-		var newCell = this.chooseCell(0,1);
+	move(matrix, grassEater) {
+		var newCell = this.chooseCell(matrix,0,1);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -51,16 +50,14 @@ module.exports =  class GrassEater extends LivingCreature {
 
 		}
 		if (this.energy < 3) {
-			this.die();
+			this.die(matrix, grassEater);
 		}
 	}
 
 
 
-	eat() {
-		var matrix = require('./matrix');
-		var grassArr = require('./array/grassArr');
-		var newCell = this.chooseCell(1);
+	eat(matrix, grassArr, grassEater) {
+		var newCell = this.chooseCell(matrix, 1);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 
@@ -81,23 +78,20 @@ module.exports =  class GrassEater extends LivingCreature {
 			}
 
 			if (this.multiply == 26) {
-				this.mulik();
+				this.mul(matrix,grassEater);
 				this.multiply = 0;
 			}
 
 
 		}
 		else {
-			this.move();
-
+			this.move(matrix, grassEater);
 		}
 	}
 
 
-	mul() {
-		var matrix = require('./matrix');
-		var grassEater = require('./array/grassEaterArr');
-		var newCell = this.chooseCell(0,1);
+	mul(matrix,grassEater) {
+		var newCell = this.chooseCell(matrix,0,1);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -113,9 +107,7 @@ module.exports =  class GrassEater extends LivingCreature {
 
 	}
 
-	die() {
-		var matrix = require('./matrix');
-		var grassEater = require('./array/grassEaterArr');
+	die(matrix, grassEater) {
 		matrix[this.y][this.x] = 0;
 		for (var i in grassEater) {
 			if (this.x == grassEater[i].x && this.y == grassEater[i].y) {

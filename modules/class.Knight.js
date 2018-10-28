@@ -1,4 +1,5 @@
 var LivingCreature = require("./class.Parent");
+var Predator = require('./class.Predator');
 
 module.exports = class Knight extends LivingCreature {
 	constructor(x, y, index) {
@@ -34,14 +35,14 @@ module.exports = class Knight extends LivingCreature {
 		];
 	}
 
-	chooseCell(character, cd, cd2, cd3, cd4) {
+	chooseCell(matrix,character, cd, cd2, cd3, cd4) {
 		this.largeCoo();
-		return super.chooseCell(character, cd, cd2, cd3, cd4);
+		return super.chooseCell(matrix,character, cd, cd2, cd3, cd4);
 	}
 
-	move() {
-		var foundCard = this.chooseCell(0, 1, 4, 6);
-		var card = random(foundCard);
+	move(matrix,knight) {
+		var newCell = this.chooseCell(matrix,0,1,4,6);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
 			var y = card[1];
@@ -61,13 +62,13 @@ module.exports = class Knight extends LivingCreature {
 			this.energy--;
 		}
 		if (this.energy < 3) {
-			this.die();
+			this.die(matrix,knight);
 		}
 	}
 
-	eat() {
-		var foundCard = this.chooseCell(4, 6);
-		var card = random(foundCard);
+	eat(matrix,predator,mutant,knight,viruspred) {
+		var newCell = this.chooseCell(matrix,4,6);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 
 			var x = card[0];
@@ -92,26 +93,25 @@ module.exports = class Knight extends LivingCreature {
 				if (x == viruspred[i].x && y == viruspred[i].y) {
 
 					viruspred.splice(i, 1);
-					this.health();
+					this.health(matrix,predator);
 				}
 			}
 
 			if (this.multiply == 25) {
-				this.mul();
+				this.mul(matrix,knight);
 				this.multiply = 0;
 			}
 
 		}
 		else {
-			this.move();
+			this.move(matrix,knight);
 
 		}
 	}
 
-	mul() {
-		var foundCard = this.chooseCell(0);
-		var card = random(foundCard);
-
+	mul(matrix,knight) {
+		var newCell = this.chooseCell(matrix,0);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
 			var y = card[1];
@@ -129,10 +129,9 @@ module.exports = class Knight extends LivingCreature {
 
 	}
 
-	health() {
-		var foundCard = this.chooseCell(6);
-		var card = random(foundCard);
-
+	health(matrix,predator) {
+		var newCell = this.chooseCell(matrix,6);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
 			var y = card[1];
@@ -146,7 +145,7 @@ module.exports = class Knight extends LivingCreature {
 
 	}
 
-	die() {
+	die(matrix,knight) {
 		this.largeCoo();
 		matrix[this.y][this.x] = 0;
 

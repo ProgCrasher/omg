@@ -20,13 +20,13 @@ module.exports = class VirusPred extends LivingCreature {
 	}
 
 
-	chooseCell(character, cd) {
+	chooseCell(matrix,character, cd) {
 		this.getNewCoor();
-		return super.chooseCell(character, cd);
+		return super.chooseCell(matrix,character, cd);
 	}
 
 
-	die() {
+	die(matrix,viruspred) {
 
 		matrix[this.y][this.x] = 0;
 
@@ -39,9 +39,9 @@ module.exports = class VirusPred extends LivingCreature {
 
 
 
-	move() {
-		var newCel = this.chooseCell(0, 1);
-		var card = random(newCel);
+	move(matrix,viruspred) {
+		var newCell = this.chooseCell(matrix,0,1);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
 			var y = card[1];
@@ -61,15 +61,14 @@ module.exports = class VirusPred extends LivingCreature {
 
 		}
 		if (this.energy < 1) {
-			this.die();
+			this.die(matrix,viruspred);
 		}
 	}
 
 
-	mul() {
-
-		var emptyCells = this.chooseCell(0);
-		var newCell = random(emptyCells);
+	mul(matrix,viruspred) {
+		var newCel = this.chooseCell(matrix,0);
+		var newCell = newCel[Math.floor(Math.random() * newCel.length)];
 		if (newCell) {
 			var newX = newCell[0];
 			var newY = newCell[1];
@@ -84,9 +83,9 @@ module.exports = class VirusPred extends LivingCreature {
 
 
 
-	eat() {
-		var foundCards = this.chooseCell(3);
-		var card = random(foundCards);
+	eat(matrix,predator,viruspred) {
+		var newCell = this.chooseCell(matrix,3);
+		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
 			var y = card[1];
@@ -112,7 +111,7 @@ module.exports = class VirusPred extends LivingCreature {
 			}
 
 			if (this.multiply == 25) {
-				this.mul();
+				this.mul(matrix,viruspred);
 				this.multiply = 0;
 			}
 
@@ -120,7 +119,7 @@ module.exports = class VirusPred extends LivingCreature {
 		}
 
 		else {
-			this.move();
+			this.move(matrix,predator,viruspred);
 
 		}
 	}

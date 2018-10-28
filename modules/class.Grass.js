@@ -9,11 +9,9 @@ module.exports = class grass extends LivingCreature {
 		this.color = "green";
 		this.multiply = 8;
 	}
-	mul() {
-		var matrix = require('./matrix');
-		var grassArr = require('./array/grassArr');
+	mul(matrix, grassArr) {
 		this.multiply++;
-		var newCell = this.chooseCell(0);
+		var newCell = this.chooseCell(matrix, 0);
 		var newCel = newCell[Math.floor(Math.random() * newCell.length)];
 		if (this.multiply >= 3 && newCel) {
 			var newGrass = new grass(newCel[0], newCel[1], this.index);
@@ -22,5 +20,4 @@ module.exports = class grass extends LivingCreature {
 			this.multiply = 0;
 		}
 	}
-
 }

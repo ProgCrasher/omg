@@ -19,14 +19,13 @@ module.exports = class Predator extends LivingCreature {
 		]
 	}
 
-	chooseCell(character, cd) {
+	chooseCell(matrix,character, cd) {
 		this.getNewCoor();
-		return super.chooseCell(character, cd);
+		return super.chooseCell(matrix,character, cd);
 	}
 
-	move() {
-		var matrix = require('./matrix');
-		var newCell = this.chooseCell(0, 1);
+	move(matrix,predator) {
+		var newCell = this.chooseCell(matrix,0, 1);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -52,16 +51,14 @@ module.exports = class Predator extends LivingCreature {
 
 		}
 		if (this.energy < 1) {
-			this.die();
+			this.die(matrix,predator);
 		}
 	}
 
 
 
-	eat() {
-		var matrix = require('./matrix');
-		var grassEater = require('./array/grassEaterArr');
-		var newCell = this.chooseCell(2);
+	eat(matrix, grassEater,predator) {
+		var newCell = this.chooseCell(matrix,2);
 		var card = newCell[Math.floor(Math.random() * newCell.length)];
 		if (card) {
 			var x = card[0];
@@ -83,7 +80,7 @@ module.exports = class Predator extends LivingCreature {
 			}
 
 			if (this.multiply == 25) {
-				this.mul();
+				this.mul(matrix,predator);
 				this.multiply = 0;
 			}
 
@@ -92,16 +89,14 @@ module.exports = class Predator extends LivingCreature {
 
 		else {
 
-			this.move();
+			this.move(matrix,predator);
 
 		}
 	}
 
 	
-	mul() {
-		var matrix = require('./matrix');
-		var predator = require('./array/predatorArr');
-		var newCel = this.chooseCell(0);
+	mul(matrix,predator) {
+		var newCel = this.chooseCell(matrix,0);
 		var newCell = newCel[Math.floor(Math.random() * newCell.length)];
 		if (newCell) {
 			var newX = newCell[0];
@@ -114,9 +109,7 @@ module.exports = class Predator extends LivingCreature {
 		}
 	}
 
-	die() {
-		var matrix = require('./matrix');
-		var predator = require('./array/predatorArr');
+	die(matrix,predator) {
 		matrix[this.y][this.x] = 0;
 		for (var i in predator) {
 			if (this.x == predator[i].x && this.y == predator[i].y) {
