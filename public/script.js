@@ -19,11 +19,10 @@ function setup() {
 
 	socket.on('recieve matrix', function (mtx) {
 		matrix = mtx;
-		createCanvas(matrix[0].length * side, matrix.length * side);
+		createCanvas(matrix[0].length * side + 600, matrix.length * side);
 		background('#acacac');
 		socket.on('redraw', redrawMatrix);
 		noLoop();
-		
 		socket.on("stats", function (st) {
 			stats = st;
 		});
@@ -36,6 +35,8 @@ function setup() {
 }
 
 function draw() {
+	background("#acacac");
+	//matrix colors
 	for (var y = 0; y < matrix.length; y++) {
 		for (var x = 0; x < matrix[y].length; x++) {
 			if (matrix[y][x] == 1) {
@@ -70,7 +71,43 @@ function draw() {
 		}
 	}
 
-	for(var i in stats)	console.log(i + ": " + stats[i]);
+	//Statics
+	textSize(49);
+	textStyle(BOLD);
+	fill(10, 255, 189)
+	var hj = 0;
+	var refresh = 0;
+	for (var i in stats) {
+		refresh++;
+		text(i + ": " + stats[i], 570, 60 + hj);
+		hj += 60;
+		if (refresh == 1) {
+
+			fill(10, 255, 189)
+		}
+		else if (refresh == 2) {
+
+			fill(10, 255, 189)
+		}
+		else if (refresh == 3) {
+
+			fill(10, 255, 189)
+		}
+		else if (refresh == 4) {
+
+			fill(10, 255, 189)
+		}
+		else if (refresh == 5) {
+
+			fill(10, 255, 189)
+		}
+		else if (refresh == 6) {
+
+			fill(10, 255, 189)
+		}
+	}
+
+
 	/*
 ////////////////////////////////////////
 
@@ -92,12 +129,5 @@ function draw() {
 		fill(10, 255, 189);
 		text('Survival has over', 10, 60);
 	}
-
-	frameRate(5);*/
-}
-
-/* manual framerate
-var x = 7;
-var _time = 1000/x;
-var dr = setInterval(draw, _time);
 */
+}

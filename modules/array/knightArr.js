@@ -1,5 +1,5 @@
 var knight = [];
-var Knight = require('../class.illPred');
+var Knight = require('../class.Knight');
 var matrix = require('../matrix');
 var y;
 var x;

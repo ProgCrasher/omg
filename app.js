@@ -5,6 +5,7 @@ var io = require('socket.io')(server);
 var fs = require('fs');
 
 var matrix = require('./modules/matrix');
+var framerate = 5;
 
 //arrays
 var grassArr = require('./modules/array/grassArr');
@@ -13,6 +14,7 @@ var predator = require('./modules/array/predatorArr');
 var mutant = require('./modules/array/mutantArr');
 var viruspred = require('./modules/array/vpredArr');
 var knight = require('./modules/array/knightArr');
+//
 
 app.use(express.static('public'));
 
@@ -39,12 +41,12 @@ io.on('connection', function (socket) {
     for (var i in viruspred) { viruspred[i].eat(matrix, predator, viruspred); };
     for (var i in knight) { knight[i].eat(matrix, predator, mutant, knight, viruspred); };
 
-    if (frameCount % 25 == 0) {
+    if (frameCount % 20 == 0) {
       socket.emit("stats", main());
     }
 
     socket.emit("redraw", matrix)
-  }, 200);
+  }, 1000/framerate);
 
   socket.on('stop-draw', function () { clearInterval(interval); })
 
@@ -53,8 +55,12 @@ io.on('connection', function (socket) {
 function main() {
 
   var stat = {
+    "Mutant": mutant.length,
+    "Knight": knight.length,
     "Grass": grassArr.length,
-    "GrassEater": grassEater.length
+    "Predator": predator.length,
+    "Grass Eater": grassEater.length,
+    "Virused Predator": viruspred.length
   };
 
   var jsonText = JSON.stringify(stat);

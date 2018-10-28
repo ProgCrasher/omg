@@ -13,7 +13,7 @@ module.exports = class grass extends LivingCreature {
 		this.multiply++;
 		var newCell = this.chooseCell(matrix, 0);
 		var newCel = newCell[Math.floor(Math.random() * newCell.length)];
-		if (this.multiply >= 3 && newCel) {
+		if (this.multiply >= 4 && newCel) {
 			var newGrass = new grass(newCel[0], newCel[1], this.index);
 			grassArr.push(newGrass);
 			matrix[newCel[1]][newCel[0]] = this.index;
